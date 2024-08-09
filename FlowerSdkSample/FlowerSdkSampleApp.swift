@@ -5,7 +5,10 @@ import FlowerSdk
 struct FlowerSdkSampleApp: App {
     var body: some Scene {
         WindowGroup {
-            VideoListView()
+            ZStack {
+                VideoListView()
+                FlowerSdk.root
+            }
         }
     }
 

@@ -36,37 +36,18 @@ class MediaPlayerHookImpl: MediaPlayerHook {
 
 struct PlaybackView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @ObservedObject var flowerAdViewObserver: FlowerAdViewObserver = FlowerAdViewObserver()
     @State var player: AVPlayer = AVPlayer()
     @State var isContentEnd = false
 
     let observer = PlayerObserver()
     var video: Video
-    var flowerAdView: FlowerAdView? = nil
-    var flowerAdsManagerListener: FlowerAdsManagerListenerImpl? = nil
-    private var playerItemDidFinishObserver: NSObjectProtocol?
-    let screenWidth = UIScreen.main.bounds.width
-    let screenHeight = UIScreen.main.bounds.height
-    var height: CGFloat = 0
-    var width: CGFloat = 0
+
+    @StateObject var flowerAdView: FlowerAdView = FlowerAdView()
+    @State private var flowerAdsManagerListener: FlowerAdsManagerListenerImpl? = nil
 
     init(video: Video) {
         self.video = video
 
-        // Calculate height based on the assumed 16:9 aspect ratio
-        self.height = screenWidth * (9.0 / 16.0)
-
-        if self.height <= screenHeight {
-            width = screenWidth
-        } else {
-            width = screenHeight * (16.0 / 9.0)
-            height = screenHeight
-        }
-
-        // TODO GUIDE: create FlowerAdView instance
-        self.flowerAdView = FlowerAdView(observer: self.flowerAdViewObserver)
-
-        self.flowerAdsManagerListener = FlowerAdsManagerListenerImpl(self)
         createPlayer()
     }
 
@@ -75,29 +56,26 @@ struct PlaybackView: View {
             Color.black.edgesIgnoringSafeArea(.all)
             ZStack {
                 VideoPlayer(player: player)
-                if !flowerAdViewObserver.isAdViewHidden {
-                    self.flowerAdView
+                self.flowerAdView.body
+            }
+            .onChange(of: observer.playbackFinished) { playbackFinished in
+                if playbackFinished {
+                    self.isContentEnd = true
+                    flowerAdView.adsManager.notifyContentEnded()
+                } else {
+                    isContentEnd = false
                 }
             }
-                    .onChange(of: observer.playbackFinished) { playbackFinished in
-                        if playbackFinished {
-                            self.isContentEnd = true
-                            flowerAdView!.adsManager.notifyContentEnded()
-                        } else {
-                            isContentEnd = false
-                        }
-                    }
-                    .frame(width: self.width, height: self.height)
-                    .onAppear {
-                        self.startVideo()
-                    }
-                    .onDisappear {
-                        self.observer.removeObserver(for: player)
-                        self.stopVideo()
-                    }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onAppear {
+                self.startVideo()
+            }
+            .onDisappear {
+                self.observer.removeObserver(for: player)
+                self.stopVideo()
+            }
         }
-                .edgesIgnoringSafeArea(.all)
-                .scaledToFill()
+        .edgesIgnoringSafeArea(.all)
     }
 
     func startVideo() {
@@ -111,11 +89,12 @@ struct PlaybackView: View {
     func stopVideo() {
         player.pause()
         player.replaceCurrentItem(with: nil)
-        flowerAdView!.adsManager.stop()
+        flowerAdView.adsManager.stop()
     }
 
     func playVod() {
-        flowerAdView!.adsManager.addListener(adsManagerListener: self.flowerAdsManagerListener!)
+        self.flowerAdsManagerListener = FlowerAdsManagerListenerImpl(self)
+        flowerAdView.adsManager.addListener(adsManagerListener: self.flowerAdsManagerListener!)
 
         // TODO GUIDE: implement MediaPlayerHook
         let mediaPlayerHook = MediaPlayerHookImpl {
@@ -129,12 +108,14 @@ struct PlaybackView: View {
         // arg2: durationMs, duration of vod content in milliseconds
         // arg3: extraParams, values you can provide for targeting
         // arg4: mediaPlayerHook, interface that provides currently playing segment information for ad tracking
-        flowerAdView!.adsManager.requestVodAd(
+        // arg5: adTagHeaders, values included in headers for ad request
+        flowerAdView.adsManager.requestVodAd(
             adTagUrl: "https://ad_request",
             contentId: "100",
             durationMs: video.duration,
             extraParams: [String: String](),
-            mediaPlayerHook: mediaPlayerHook
+            mediaPlayerHook: mediaPlayerHook,
+            adTagHeaders: [String: String]()
         )
 
         var playerItem = AVPlayerItem(url: URL(string: video.videoUrl)!)
@@ -145,7 +126,8 @@ struct PlaybackView: View {
     }
 
     func playLinearTv() {
-        flowerAdView!.adsManager.addListener(adsManagerListener: self.flowerAdsManagerListener!)
+        self.flowerAdsManagerListener = FlowerAdsManagerListenerImpl(self)
+        flowerAdView.adsManager.addListener(adsManagerListener: self.flowerAdsManagerListener!)
 
         // TODO GUIDE: implement MediaPlayerHook
         let mediaPlayerHook = MediaPlayerHookImpl {
@@ -159,13 +141,23 @@ struct PlaybackView: View {
         // arg2: channelId, unique channel id in your service
         // arg3: extraParams, values you can provide for targeting
         // arg4: mediaPlayerHook, interface that provides currently playing segment information for ad tracking
-        let changedChannelUrl = flowerAdView!.adsManager.changeChannelUrl(
+        // arg5: adTagHeaders, (Optional) values included in headers for ad request
+        // arg6: channelStreamHeaders, (Optional) values included in headers for channel stream request
+        let changedChannelUrl = flowerAdView.adsManager.changeChannelUrl(
             videoUrl: video.videoUrl,
             adTagUrl: "https://ad_request",
             channelId: "1",
             extraParams: [String: String](),
-            mediaPlayerHook: mediaPlayerHook
+            mediaPlayerHook: mediaPlayerHook,
+            adTagHeaders: [String: String](),
+            channelStreamHeaders: [String: String]()
         )
+
+        // OPTIONAL GUIDE: change extraParams during stream playback
+        player.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 1), queue: .main) { [weak flowerAdView] time in
+            print("Periodic time change: \(time.value.description)")
+            flowerAdView?.adsManager.changeChannelExtraParams(extraParams: ["myTargetingKey": time.value.description]);
+        }
 
         player.replaceCurrentItem(with: AVPlayerItem(url: URL(string: changedChannelUrl)!))
         player.play()
@@ -190,8 +182,8 @@ struct PlaybackView: View {
     }
 
     func releasePlayer() {
-        flowerAdView!.adsManager.removeListener(adsManagerListener: self.flowerAdsManagerListener!)
-        flowerAdView!.adsManager.stop()
+        flowerAdView.adsManager.removeListener(adsManagerListener: self.flowerAdsManagerListener!)
+        flowerAdView.adsManager.stop()
         do {
             player.replaceCurrentItem(with: nil)
         } catch {
@@ -200,7 +192,7 @@ struct PlaybackView: View {
     }
 }
 
-class FlowerAdsManagerListenerImpl: FlowerAdsManagerListener {
+private class FlowerAdsManagerListenerImpl: FlowerAdsManagerListener {
     @Environment(\.presentationMode) var presentationMode
     var playbackView: PlaybackView
 
@@ -216,12 +208,12 @@ class FlowerAdsManagerListenerImpl: FlowerAdsManagerListener {
 
                     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5) {
                         // TODO GUIDE: play midroll ad
-                        self.playbackView.flowerAdView!.adsManager.play()
+                        self.playbackView.flowerAdView.adsManager.play()
                     }
                 }
             } else {
                 // TODO GUIDE: play preroll ad
-                self.playbackView.flowerAdView!.adsManager.play()
+                self.playbackView.flowerAdView.adsManager.play()
             }
         } else {
             // TODO GUIDE: need nothing for linear tv
@@ -267,5 +259,9 @@ class FlowerAdsManagerListenerImpl: FlowerAdsManagerListener {
             }
 
         }
+    }
+
+    func onAdSkipped(reason: Int32) {
+        print("onAdSkipped: \(reason)")
     }
 }

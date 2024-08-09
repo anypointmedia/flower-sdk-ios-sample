@@ -12,11 +12,12 @@
 		BBD2A5542B567EA2001A2E91 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BBD2A5532B567EA2001A2E91 /* Preview Assets.xcassets */; };
 		CD359C212BA75326007F6F9C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CD359C202BA75326007F6F9C /* README.md */; };
 		CD359C272BA7543B007F6F9C /* FlowerSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CD359C262BA7543B007F6F9C /* FlowerSdk */; };
-		CDEBEC522BA60F8300430550 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEBEC4D2BA60F8300430550 /* Video.swift */; };
-		CDEBEC532BA60F8300430550 /* FlowerSdkSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEBEC4E2BA60F8300430550 /* FlowerSdkSampleApp.swift */; };
-		CDEBEC542BA60F8300430550 /* PlaybackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEBEC4F2BA60F8300430550 /* PlaybackView.swift */; };
-		CDEBEC552BA60F8300430550 /* VideoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEBEC502BA60F8300430550 /* VideoListView.swift */; };
-		CDEBEC562BA60F8300430550 /* VideoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEBEC512BA60F8300430550 /* VideoList.swift */; };
+		CD8FC13E2C66221900DFB579 /* VideoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8FC1382C66221900DFB579 /* VideoList.swift */; };
+		CD8FC13F2C66221900DFB579 /* VideoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8FC1392C66221900DFB579 /* VideoListView.swift */; };
+		CD8FC1402C66221900DFB579 /* PlaybackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8FC13A2C66221900DFB579 /* PlaybackView.swift */; };
+		CD8FC1412C66221900DFB579 /* FlowerSdkSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8FC13B2C66221900DFB579 /* FlowerSdkSampleApp.swift */; };
+		CD8FC1422C66221900DFB579 /* InterstitialAdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8FC13C2C66221900DFB579 /* InterstitialAdView.swift */; };
+		CD8FC1432C66221900DFB579 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8FC13D2C66221900DFB579 /* Video.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,12 +26,13 @@
 		BBD2A5502B567EA2001A2E91 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BBD2A5532B567EA2001A2E91 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CD359C202BA75326007F6F9C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		CD8FC1382C66221900DFB579 /* VideoList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoList.swift; sourceTree = "<group>"; };
+		CD8FC1392C66221900DFB579 /* VideoListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoListView.swift; sourceTree = "<group>"; };
+		CD8FC13A2C66221900DFB579 /* PlaybackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackView.swift; sourceTree = "<group>"; };
+		CD8FC13B2C66221900DFB579 /* FlowerSdkSampleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowerSdkSampleApp.swift; sourceTree = "<group>"; };
+		CD8FC13C2C66221900DFB579 /* InterstitialAdView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterstitialAdView.swift; sourceTree = "<group>"; };
+		CD8FC13D2C66221900DFB579 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		CDEBEC342BA60C5200430550 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		CDEBEC4D2BA60F8300430550 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
-		CDEBEC4E2BA60F8300430550 /* FlowerSdkSampleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowerSdkSampleApp.swift; sourceTree = "<group>"; };
-		CDEBEC4F2BA60F8300430550 /* PlaybackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackView.swift; sourceTree = "<group>"; };
-		CDEBEC502BA60F8300430550 /* VideoListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoListView.swift; sourceTree = "<group>"; };
-		CDEBEC512BA60F8300430550 /* VideoList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,14 +69,15 @@
 			isa = PBXGroup;
 			children = (
 				BBD2A5502B567EA2001A2E91 /* Assets.xcassets */,
-				CDEBEC4E2BA60F8300430550 /* FlowerSdkSampleApp.swift */,
-				CDEBEC342BA60C5200430550 /* Info.plist */,
-				CDEBEC4F2BA60F8300430550 /* PlaybackView.swift */,
-				BBD2A5522B567EA2001A2E91 /* Preview Content */,
-				CDEBEC4D2BA60F8300430550 /* Video.swift */,
-				CDEBEC512BA60F8300430550 /* VideoList.swift */,
-				CDEBEC502BA60F8300430550 /* VideoListView.swift */,
 				948654545393E0722AC93990 /* FlowerSdkSample-Bridging-Header.h */,
+				CD8FC13B2C66221900DFB579 /* FlowerSdkSampleApp.swift */,
+				CDEBEC342BA60C5200430550 /* Info.plist */,
+				CD8FC13C2C66221900DFB579 /* InterstitialAdView.swift */,
+				CD8FC13A2C66221900DFB579 /* PlaybackView.swift */,
+				BBD2A5522B567EA2001A2E91 /* Preview Content */,
+				CD8FC13D2C66221900DFB579 /* Video.swift */,
+				CD8FC1382C66221900DFB579 /* VideoList.swift */,
+				CD8FC1392C66221900DFB579 /* VideoListView.swift */,
 			);
 			path = FlowerSdkSample;
 			sourceTree = "<group>";
@@ -173,11 +176,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDEBEC562BA60F8300430550 /* VideoList.swift in Sources */,
-				CDEBEC552BA60F8300430550 /* VideoListView.swift in Sources */,
-				CDEBEC522BA60F8300430550 /* Video.swift in Sources */,
-				CDEBEC542BA60F8300430550 /* PlaybackView.swift in Sources */,
-				CDEBEC532BA60F8300430550 /* FlowerSdkSampleApp.swift in Sources */,
+				CD8FC13F2C66221900DFB579 /* VideoListView.swift in Sources */,
+				CD8FC1432C66221900DFB579 /* Video.swift in Sources */,
+				CD8FC1402C66221900DFB579 /* PlaybackView.swift in Sources */,
+				CD8FC1422C66221900DFB579 /* InterstitialAdView.swift in Sources */,
+				CD8FC13E2C66221900DFB579 /* VideoList.swift in Sources */,
+				CD8FC1412C66221900DFB579 /* FlowerSdkSampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,7 +403,7 @@
 			repositoryURL = "https://github.com/anypointmedia/flower-sdk-ios";
 			requirement = {
 				kind = exactVersion;
-				version = 1.0.5;
+				version = 1.0.6;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
