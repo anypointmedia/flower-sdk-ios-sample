@@ -403,7 +403,7 @@
 			repositoryURL = "https://github.com/anypointmedia/flower-sdk-ios";
 			requirement = {
 				kind = exactVersion;
-				version = 1.0.6;
+				version = 1.0.7;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
