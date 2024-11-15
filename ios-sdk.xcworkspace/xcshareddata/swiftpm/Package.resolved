@@ -1,0 +1,33 @@
+{
+  "originHash" : "44439394383ad026e213ccfa8261f146f196b2c1d4da13b583da1536e6aa84ee",
+  "pins" : [
+    {
+      "identity" : "devicekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/devicekit/DeviceKit",
+      "state" : {
+        "revision" : "7ff5331960151aec74fb422e1d45f54ef6cc086d",
+        "version" : "5.5.0"
+      }
+    },
+    {
+      "identity" : "flower-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/anypointmedia/flower-sdk-ios",
+      "state" : {
+        "revision" : "d91173d438a680ca0336f30146e9fb82396876c7",
+        "version" : "1.0.12"
+      }
+    },
+    {
+      "identity" : "fuzi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cezheng/Fuzi",
+      "state" : {
+        "revision" : "f08c8323da21e985f3772610753bcfc652c2103f",
+        "version" : "3.1.3"
+      }
+    }
+  ],
+  "version" : 3
+}
