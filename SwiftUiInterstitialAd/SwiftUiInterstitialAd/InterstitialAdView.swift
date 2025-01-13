@@ -1,8 +1,10 @@
 import Foundation
+import os
 import SwiftUI
 import FlowerSdk
 
 struct InterstitialAdView: View {
+    // TODO GUIDE: Create FlowerAdView instance
     private let flowerAdView: FlowerAdView = FlowerAdView()
     @State private var flowerAdsManagerListener: FlowerAdsManagerListenerImpl!
 
@@ -12,6 +14,7 @@ struct InterstitialAdView: View {
     var body: some View {
         ZStack {
             Text("Original Content")
+            // TODO GUIDE: Add FlowerAdView over content
             self.flowerAdView.body
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -28,7 +31,7 @@ struct InterstitialAdView: View {
         self.flowerAdsManagerListener = FlowerAdsManagerListenerImpl(self)
         flowerAdView.adsManager.addListener(adsManagerListener: flowerAdsManagerListener)
 
-        // TODO GUIDE: request ad
+        // TODO GUIDE: Request interstitial ad
         // arg0: adTagUrl, url from flower system
         //       You must file a request to Anypoint Media to receive a adTagUrl.
         // arg1: extraParams, values you can provide for targeting
@@ -50,6 +53,7 @@ struct InterstitialAdView: View {
     }
 }
 
+// TODO GUIDE: Implement FlowerAdsManagerListener
 private class FlowerAdsManagerListenerImpl: FlowerAdsManagerListener {
     var interstitialAdView: InterstitialAdView
 
@@ -59,32 +63,35 @@ private class FlowerAdsManagerListenerImpl: FlowerAdsManagerListener {
 
     func onPrepare(adDurationMs: Int32) {
         DispatchQueue.main.async {
-            // TODO GUIDE: play ad
+            // TODO GUIDE: Play interstitial ad
             self.interstitialAdView.playAd()
         }
     }
 
     func onPlay() {
-        // OPTIONAL GUIDE: need nothing for interstitial ad
+        DispatchQueue.main.async {
+            // OPTIONAL GUIDE: Need nothing to do for interstitial ad
+        }
     }
 
     func onCompleted() {
         DispatchQueue.main.async {
-            // TODO GUIDE: stop FlowerAdsManager
+            // TODO GUIDE: Stop FlowerAdsManager after the interstitial ad ends
             self.interstitialAdView.stopAd()
         }
     }
 
     func onError(error: FlowerError?) {
         DispatchQueue.main.async {
-            // TODO GUIDE: stop FlowerAdsManager
+            // TODO GUIDE: Stop FlowerAdsManager on error
             self.interstitialAdView.stopAd()
         }
     }
 
     func onAdSkipped(reason: Int32) {
         DispatchQueue.main.async {
-            print("Ad skipped: \(reason)")
+            // OPTIONAL GUIDE: Need nothing to do for interstitial ad
+            os_log(OSLogType.info, log: .default, "Ad skipped - reason: %d", reason)
         }
     }
 }

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CD1A845A2D0FAB8F0034A176 /* FlowerSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CD1A84592D0FAB8F0034A176 /* FlowerSdk */; };
+		CD996F712D351702004AC794 /* FlowerSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CD996F702D351702004AC794 /* FlowerSdk */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD1A845A2D0FAB8F0034A176 /* FlowerSdk in Frameworks */,
+				CD996F712D351702004AC794 /* FlowerSdk in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,7 +78,7 @@
 			);
 			name = SwiftUiVod;
 			packageProductDependencies = (
-				CD1A84592D0FAB8F0034A176 /* FlowerSdk */,
+				CD996F702D351702004AC794 /* FlowerSdk */,
 			);
 			productName = SwiftUiVod;
 			productReference = CD4A81F82CE5C765009E456F /* SwiftUiVod.app */;
@@ -110,7 +110,7 @@
 			mainGroup = CD4A81EF2CE5C765009E456F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				CD1A84582D0FAB8F0034A176 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */,
+				CD996F6F2D351702004AC794 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CD4A81F92CE5C765009E456F /* Products */;
@@ -357,20 +357,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CD1A84582D0FAB8F0034A176 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */ = {
+		CD996F6F2D351702004AC794 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/anypointmedia/flower-sdk-ios";
 			requirement = {
 				kind = exactVersion;
-				version = 1.0.13;
+				version = 1.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CD1A84592D0FAB8F0034A176 /* FlowerSdk */ = {
+		CD996F702D351702004AC794 /* FlowerSdk */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CD1A84582D0FAB8F0034A176 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */;
+			package = CD996F6F2D351702004AC794 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */;
 			productName = FlowerSdk;
 		};
 /* End XCSwiftPackageProductDependency section */

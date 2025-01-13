@@ -1,9 +1,10 @@
+import os
 import UIKit
 import AVKit
 import SwiftUI
 import FlowerSdk
 
-// TODO GUIDE: implement MediaPlayerHook
+// TODO GUIDE: Implement MediaPlayerHook to return the player instance if the player is supported by Flower SDK
 class MediaPlayerHookImpl: MediaPlayerHook {
     public var getPlayerFn: () -> Any
 
@@ -19,13 +20,15 @@ class MediaPlayerHookImpl: MediaPlayerHook {
     }
 }
 
-class PlayerViewController: UIViewController, FlowerAdsManagerListener {
+class PlayerViewController: UIViewController {
     private let video: Video?
     private var nextVideo: Video!
 
     private var urlInputField: UITextField? = nil
     private var playerContainerView = UIView()
     private var player = AVPlayer()
+
+    // TODO GUIDE: Create FlowerAdView instance
     private var flowerAdView = FlowerAdView()
 
     init(video: Video?) {
@@ -45,7 +48,8 @@ class PlayerViewController: UIViewController, FlowerAdsManagerListener {
 
         let leftBarButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(customBackButtonTapped))
         navigationItem.leftBarButtonItem = leftBarButton
-        
+
+        // TODO GUIDE: Add FlowerAdView over linear TV content
         playerContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(playerContainerView)
         playerContainerView.layer.addSublayer(AVPlayerLayer(player: player))
@@ -108,11 +112,15 @@ class PlayerViewController: UIViewController, FlowerAdsManagerListener {
     }
 
     @objc private func customBackButtonTapped() {
-            releasePlayer()
+        // TODO GUIDE: Stop Flower SDK and release player resources on view destroy
+        flowerAdView.adsManager.removeListener(adsManagerListener: self)
+        flowerAdView.adsManager.stop()
+        player.pause()
+        player.replaceCurrentItem(with: nil)
 
-            navigationController?.popViewController(animated: true)
+        navigationController?.popViewController(animated: true)
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
     }
@@ -130,7 +138,11 @@ class PlayerViewController: UIViewController, FlowerAdsManagerListener {
     }
 
     @objc private func switchChannel() {
-        releasePlayer()
+        // TODO GUIDE: Stop Flower SDK and release player resources on view destroy
+        flowerAdView.adsManager.removeListener(adsManagerListener: self)
+        flowerAdView.adsManager.stop()
+        player.pause()
+        player.replaceCurrentItem(with: nil)
 
         let newPlayerVC = PlayerViewController(video: nextVideo)
 
@@ -144,13 +156,13 @@ class PlayerViewController: UIViewController, FlowerAdsManagerListener {
     private func playLinearTv(url: String) {
         flowerAdView.adsManager.addListener(adsManagerListener: self)
 
-        // TODO GUIDE: implement MediaPlayerHook
+        // TODO GUIDE: Implement MediaPlayerHook to return the player instance if the player is supported by Flower SDK
         let mediaPlayerHook = MediaPlayerHookImpl {
             return self.player
         }
 
-        // TODO GUIDE: change original LinearTV stream url by adView.adsManager.changeChannelUrl
-        // arg0: videoUrl, original LinearTV stream url
+        // TODO GUIDE: Change original linear TV stream url
+        // arg0: videoUrl, original linear TV stream url
         // arg1: adTagUrl, url from flower system
         //       You must file a request to Anypoint Media to receive a adTagUrl.
         // arg2: channelId, unique channel id in your service
@@ -171,53 +183,48 @@ class PlayerViewController: UIViewController, FlowerAdsManagerListener {
         player.replaceCurrentItem(with: AVPlayerItem(url: URL(string: changedChannelUrl)!))
         player.play()
     }
+}
 
-    private func releasePlayer() {
-        flowerAdView.adsManager.removeListener(adsManagerListener: self)
-        flowerAdView.adsManager.stop()
-        player.pause()
-        player.replaceCurrentItem(with: nil)
-    }
-
-    private func replayLinearTv() {
-        releasePlayer()
-
-        if (video != nil) {
-            playLinearTv(url: video!.url)
-        } else {
-            playFromInput()
-        }
-    }
-
+// TODO GUIDE: Implement FlowerAdsManagerListener
+extension PlayerViewController: FlowerAdsManagerListener {
     func onPrepare(adDurationMs: Int32) {
-        // OPTIONAL GUIDE: need nothing for linear tv
+        DispatchQueue.main.async {
+            // OPTIONAL GUIDE: Need nothing to do for linear TV
+        }
     }
 
     func onPlay() {
         DispatchQueue.main.async {
-            // OPTIONAL GUIDE: enable additional actions for ad playback
-            print("Ad started")
+            // OPTIONAL GUIDE: Implement custom actions for when the ad playback starts
         }
     }
 
     func onCompleted() {
         DispatchQueue.main.async {
-            // OPTIONAL GUIDE: disable additional actions after ad complete
-            print("Ad completed")
+            // OPTIONAL GUIDE: Implement custom actions for when the ad playback ends
         }
     }
 
     func onError(error: FlowerError?) {
-        DispatchQueue.main.async {
-            // TODO GUIDE: restart to play Linear TV on ad error
-            print("Ad error: \(error?.message ?? "")")
-            self.replayLinearTv()
+        DispatchQueue.main.async { [self] in
+            // TODO GUIDE: Stop Flower SDK and release linear TV player resources on ad error
+            flowerAdView.adsManager.removeListener(adsManagerListener: self)
+            flowerAdView.adsManager.stop()
+            player.pause()
+            player.replaceCurrentItem(with: nil)
+
+            if (video != nil) {
+                playLinearTv(url: video!.url)
+            } else {
+                playFromInput()
+            }
         }
     }
 
     func onAdSkipped(reason: Int32) {
         DispatchQueue.main.async {
-            print("Ad skipped: \(reason)")
+            // OPTIONAL GUIDE: Need nothing to do for linear TV
+            os_log(OSLogType.info, log: .default, "Ad skipped - reason: %d", reason)
         }
     }
 }

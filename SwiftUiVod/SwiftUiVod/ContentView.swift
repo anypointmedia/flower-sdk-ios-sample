@@ -22,7 +22,7 @@ struct ContentView: View {
                 viewIndex = 0
             }
         }) {
-            Text("Play \(videoList[viewIndex].title)")
+            Text("Switch to \(videoList[viewIndex == 0 ? 1 : 0].title)")
                 .padding()
                 .background(Color.blue)
                 .foregroundColor(.white)

@@ -1,9 +1,10 @@
+import os
 import UIKit
 import AVKit
 import SwiftUI
 import FlowerSdk
 
-// TODO GUIDE: implement MediaPlayerHook
+// TODO GUIDE: Implement MediaPlayerHook to return the player instance if the player is supported by Flower SDK
 class MediaPlayerHookImpl: MediaPlayerHook {
     public var getPlayerFn: () -> Any
 
@@ -19,7 +20,7 @@ class MediaPlayerHookImpl: MediaPlayerHook {
     }
 }
 
-class PlayerViewController: UIViewController, UINavigationControllerDelegate, FlowerAdsManagerListener {
+class PlayerViewController: UIViewController, UINavigationControllerDelegate {
     private let video: Video?
     private var nextVideo: Video!
 
@@ -28,6 +29,8 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate, Fl
     private var playerContainerView = UIView()
     private var player = AVPlayer()
     private var isContentEnd = false
+
+    // TODO GUIDE: Create FlowerAdView instance
     private var flowerAdView = FlowerAdView()
 
     init(video: Video?) {
@@ -48,6 +51,7 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate, Fl
         let leftBarButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(customBackButtonTapped))
         navigationItem.leftBarButtonItem = leftBarButton
         
+        // TODO GUIDE: Add FlowerAdView over VOD content
         playerContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(playerContainerView)
         playerContainerView.layer.addSublayer(AVPlayerLayer(player: player))
@@ -139,6 +143,7 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate, Fl
 
     @objc func playerDidFinishPlaying(_ notification: Notification) {
         isContentEnd = true
+        // TODO GUIDE: Notify the end of VOD content
         flowerAdView.adsManager.notifyContentEnded()
     }
 
@@ -165,16 +170,16 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate, Fl
     private func playVod(url: String, durationMs: Int64) {
         flowerAdView.adsManager.addListener(adsManagerListener: self)
 
-        // TODO GUIDE: implement MediaPlayerHook
+        // TODO GUIDE: Implement MediaPlayerHook to return the player instance if the player is supported by Flower SDK
         let mediaPlayerHook = MediaPlayerHookImpl {
             return self.player
         }
 
-        // TODO GUIDE: request vod ad
+        // TODO GUIDE: Request VOD ad
         // arg0: adTagUrl, url from flower system.
         //       You must file a request to Anypoint Media to receive a adTagUrl.
         // arg1: contentId, unique content id in your service
-        // arg2: durationMs, duration of vod content in milliseconds
+        // arg2: durationMs, duration of VOD content in milliseconds
         // arg3: extraParams, values you can provide for targeting
         // arg4: mediaPlayerHook, interface that provides currently playing segment information for ad tracking
         // arg5: adTagHeaders, values included in headers for ad requests
@@ -204,16 +209,17 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate, Fl
         player.pause()
         player.replaceCurrentItem(with: nil)
     }
+}
 
+// TODO GUIDE: Implement FlowerAdsManagerListener
+extension PlayerViewController: FlowerAdsManagerListener {
     func onPrepare(adDurationMs: Int32) {
         DispatchQueue.main.async {
             if (self.player.rate != 0.0) {
-                DispatchQueue.main.async {
-                    // TODO GUIDE: play midroll ad
-                    self.flowerAdView.adsManager.play()
-                }
+                // TODO GUIDE: Play mid-roll ad
+                self.flowerAdView.adsManager.play()
             } else {
-                // TODO GUIDE: play preroll ad
+                // TODO GUIDE: Play pre-roll ad
                 self.flowerAdView.adsManager.play()
             }
         }
@@ -221,14 +227,14 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate, Fl
 
     func onPlay() {
         DispatchQueue.main.async {
-            // TODO GUIDE: pause VOD content
+            // TODO GUIDE: Pause VOD content when the ad playback starts
             self.player.pause()
         }
     }
 
     func onCompleted() {
         DispatchQueue.main.async {
-            // TODO GUIDE: resume VOD content after ad complete
+            // TODO GUIDE: Resume VOD content when the ad playback ends
             if self.isContentEnd {
                 return
             }
@@ -239,7 +245,7 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate, Fl
 
     func onError(error: FlowerError?) {
         DispatchQueue.main.async {
-            // TODO GUIDE: resume VOD content on ad error
+            // TODO GUIDE: Resume VOD content on ad error
             if self.isContentEnd {
                 return
             }
@@ -250,7 +256,8 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate, Fl
 
     func onAdSkipped(reason: Int32) {
         DispatchQueue.main.async {
-            print("Ad skipped: \(reason)")
+            // OPTIONAL GUIDE: Need nothing to do for VOD
+            os_log(OSLogType.info, log: .default, "Ad skipped - reason: %d", reason)
         }
     }
 }
