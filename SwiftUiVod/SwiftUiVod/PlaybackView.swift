@@ -39,7 +39,7 @@ class MediaPlayerHookImpl: MediaPlayerHook {
 }
 
 struct PlaybackView: View {
-    @State var player: AVPlayer = AVPlayer()
+    @State var player = AVQueuePlayer()
     @State var activated = true
     @ObservedObject private var observer = PlayerObserver()
     
@@ -135,9 +135,8 @@ struct PlaybackView: View {
             adTagHeaders: [String: String]()
         )
 
-        let playerViewController = AVPlayerViewController()
-        playerViewController.player = player
-        playerViewController.showsPlaybackControls = true
+        player.pause()
+        player.removeAllItems()
         player.replaceCurrentItem(with: AVPlayerItem(url: URL(string: videoUrl)!))
 
         observer.observePlaybackEvents(for: player)
@@ -147,7 +146,7 @@ struct PlaybackView: View {
         flowerAdView.adsManager.removeListener(adsManagerListener: flowerAdsManagerListener!)
         flowerAdView.adsManager.stop()
         player.pause()
-        player.replaceCurrentItem(with: nil)
+        player.removeAllItems()
     }
 }
 

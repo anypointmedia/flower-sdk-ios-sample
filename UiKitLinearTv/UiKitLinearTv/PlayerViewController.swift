@@ -25,11 +25,13 @@ class PlayerViewController: UIViewController {
     private var nextVideo: Video!
 
     private var urlInputField: UITextField? = nil
-    private var playerContainerView = UIView()
-    private var player = AVPlayer()
+    private var player = AVQueuePlayer()
 
     // TODO GUIDE: Create FlowerAdView instance
-    private var flowerAdView = FlowerAdView()
+    private var flowerAdViewHostingController = FlowerAdView.HostingController()
+    private var flowerAdView: FlowerAdView {
+        flowerAdViewHostingController.adView
+    }
 
     init(video: Video?) {
         self.video = video
@@ -49,15 +51,24 @@ class PlayerViewController: UIViewController {
         let leftBarButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(customBackButtonTapped))
         navigationItem.leftBarButtonItem = leftBarButton
 
-        // TODO GUIDE: Add FlowerAdView over linear TV content
-        playerContainerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(playerContainerView)
-        playerContainerView.layer.addSublayer(AVPlayerLayer(player: player))
-        let flowerAdViewHostingController = UIHostingController(rootView: flowerAdView.body)
-        flowerAdViewHostingController.view.backgroundColor = .clear
+        let playerViewController = AVPlayerViewController()
+        playerViewController.player = player
+        view.addSubview(playerViewController.view)
+        addChild(playerViewController)
+        playerViewController.didMove(toParent: self)
+
+        view.addSubview(flowerAdViewHostingController.view)
         addChild(flowerAdViewHostingController)
-        playerContainerView.addSubview(flowerAdViewHostingController.view)
         flowerAdViewHostingController.didMove(toParent: self)
+
+        // TODO GUIDE: Add FlowerAdView over linear TV content
+        flowerAdViewHostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            flowerAdViewHostingController.view.topAnchor.constraint(equalTo: playerViewController.view.topAnchor),
+            flowerAdViewHostingController.view.bottomAnchor.constraint(equalTo: playerViewController.view.bottomAnchor),
+            flowerAdViewHostingController.view.leadingAnchor.constraint(equalTo: playerViewController.view.leadingAnchor),
+            flowerAdViewHostingController.view.trailingAnchor.constraint(equalTo: playerViewController.view.trailingAnchor)
+        ])
 
         let switchButton = UIButton(type: .system)
         switchButton.setTitle("Switch to \(nextVideo.title)", for: .normal)
@@ -69,10 +80,10 @@ class PlayerViewController: UIViewController {
             playLinearTv(url: video!.url)
 
             NSLayoutConstraint.activate([
-                playerContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                playerContainerView.bottomAnchor.constraint(equalTo: switchButton.topAnchor, constant: -20),
-                playerContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                playerContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                playerViewController.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                playerViewController.view.bottomAnchor.constraint(equalTo: switchButton.topAnchor, constant: -20),
+                playerViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                playerViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
                 switchButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 switchButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -100,10 +111,10 @@ class PlayerViewController: UIViewController {
                 playButton.topAnchor.constraint(equalTo: urlInputField.bottomAnchor, constant: 20),
                 playButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
-                playerContainerView.topAnchor.constraint(equalTo: playButton.bottomAnchor, constant: 20),
-                playerContainerView.bottomAnchor.constraint(equalTo: switchButton.topAnchor, constant: -20),
-                playerContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                playerContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                playerViewController.view.topAnchor.constraint(equalTo: playButton.bottomAnchor, constant: 20),
+                playerViewController.view.bottomAnchor.constraint(equalTo: switchButton.topAnchor, constant: -20),
+                playerViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                playerViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
                 switchButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 switchButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -116,19 +127,13 @@ class PlayerViewController: UIViewController {
         flowerAdView.adsManager.removeListener(adsManagerListener: self)
         flowerAdView.adsManager.stop()
         player.pause()
-        player.replaceCurrentItem(with: nil)
+        player.removeAllItems()
 
         navigationController?.popViewController(animated: true)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        playerContainerView.layer.sublayers?.forEach { $0.frame = playerContainerView.bounds }
     }
 
     @objc private func playFromInput() {
@@ -142,7 +147,7 @@ class PlayerViewController: UIViewController {
         flowerAdView.adsManager.removeListener(adsManagerListener: self)
         flowerAdView.adsManager.stop()
         player.pause()
-        player.replaceCurrentItem(with: nil)
+        player.removeAllItems()
 
         let newPlayerVC = PlayerViewController(video: nextVideo)
 
@@ -180,6 +185,8 @@ class PlayerViewController: UIViewController {
             channelStreamHeaders: [String: String]()
         )
 
+        player.pause()
+        player.removeAllItems()
         player.replaceCurrentItem(with: AVPlayerItem(url: URL(string: changedChannelUrl)!))
         player.play()
     }
@@ -211,7 +218,7 @@ extension PlayerViewController: FlowerAdsManagerListener {
             flowerAdView.adsManager.removeListener(adsManagerListener: self)
             flowerAdView.adsManager.stop()
             player.pause()
-            player.replaceCurrentItem(with: nil)
+            player.removeAllItems()
 
             if (video != nil) {
                 playLinearTv(url: video!.url)

@@ -5,7 +5,10 @@ import FlowerSdk
 
 class InterstitialAdViewController: UIViewController {
     // TODO GUIDE: Create FlowerAdView instance
-    private var flowerAdView = FlowerAdView()
+    private var flowerAdViewHostingController = FlowerAdView.HostingController()
+    private var flowerAdView: FlowerAdView {
+        flowerAdViewHostingController.adView
+    }
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -26,15 +29,12 @@ class InterstitialAdViewController: UIViewController {
         contentText.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(contentText)
 
-        // TODO GUIDE: Add FlowerAdView over content
-        let flowerAdViewHostingController = UIHostingController(rootView: flowerAdView.body)
-        flowerAdViewHostingController.view.backgroundColor = .clear
-        flowerAdViewHostingController.view.translatesAutoresizingMaskIntoConstraints = false
         addChild(flowerAdViewHostingController)
         view.addSubview(flowerAdViewHostingController.view)
         flowerAdViewHostingController.didMove(toParent: self)
 
-        // add flowerAdView to the view & set constraints
+        // TODO GUIDE: Add FlowerAdView over content
+        flowerAdViewHostingController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             contentText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             contentText.centerYAnchor.constraint(equalTo: view.centerYAnchor),

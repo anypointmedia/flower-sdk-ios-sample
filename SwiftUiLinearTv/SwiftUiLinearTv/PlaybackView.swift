@@ -22,7 +22,7 @@ class MediaPlayerHookImpl: MediaPlayerHook {
 }
 
 struct PlaybackView: View {
-    @State public var player: AVPlayer = AVPlayer()
+    @State public var player = AVQueuePlayer()
 
     private let video: Video?
     private let nextVideo: Video
@@ -60,7 +60,7 @@ struct PlaybackView: View {
                 flowerAdView.adsManager.removeListener(adsManagerListener: flowerAdsManagerListener!)
                 flowerAdView.adsManager.stop()
                 player.pause()
-                player.replaceCurrentItem(with: nil)
+                player.removeAllItems()
             }
             if video == nil {
                 Button("Play") {
@@ -103,9 +103,8 @@ struct PlaybackView: View {
             channelStreamHeaders: [String: String]()
         )
 
-        let playerViewController = AVPlayerViewController()
-        playerViewController.player = player
-        playerViewController.showsPlaybackControls = true
+        player.pause()
+        player.removeAllItems()
         player.replaceCurrentItem(with: AVPlayerItem(url: URL(string: changedChannelUrl)!))
         player.play()
     }
@@ -143,7 +142,7 @@ private class FlowerAdsManagerListenerImpl: FlowerAdsManagerListener {
             playbackView.flowerAdView.adsManager.removeListener(adsManagerListener: self)
             playbackView.flowerAdView.adsManager.stop()
             playbackView.player.pause()
-            playbackView.player.replaceCurrentItem(with: nil)
+            playbackView.player.removeAllItems()
 
             // TODO GUIDE: Restart linear TV playback on ad error
             playbackView.playLinearTv()

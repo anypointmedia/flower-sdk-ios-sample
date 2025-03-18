@@ -2,21 +2,21 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:SwiftUiInterstitialAd/SwiftUiInterstitialAd.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:SwiftUiLinearTv/SwiftUiLinearTv.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:SwiftUiVod/SwiftUiVod.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:SwiftUiInterstitialAd/SwiftUiInterstitialAd.xcodeproj">
+      location = "group:UiKitInterstitialAd/UiKitInterstitialAd.xcodeproj">
    </FileRef>
    <FileRef
       location = "container:UiKitLinearTv/UiKitLinearTv.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:UiKitVod/UiKitVod.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:UiKitInterstitialAd/UiKitInterstitialAd.xcodeproj">
    </FileRef>
 </Workspace>
