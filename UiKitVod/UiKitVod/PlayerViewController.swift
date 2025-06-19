@@ -4,22 +4,6 @@ import AVKit
 import SwiftUI
 import FlowerSdk
 
-// TODO GUIDE: Implement MediaPlayerHook to return the player instance if the player is supported by Flower SDK
-class MediaPlayerHookImpl: MediaPlayerHook {
-    public var getPlayerFn: () -> Any
-
-    public init(getPlayerFn: @escaping () -> Any) {
-        self.getPlayerFn = getPlayerFn
-    }
-
-    /**
-     * Return a player instance or MediaPlayerAdapter instance
-     */
-    public func getPlayer() -> Any? {
-        getPlayerFn()
-    }
-}
-
 class PlayerViewController: UIViewController, UINavigationControllerDelegate {
     private let video: Video?
     private var nextVideo: Video!
@@ -81,6 +65,7 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate {
         if (video != nil) {
             playVod(url: video!.url, durationMs: video!.durationMs)
 
+            playerViewController.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 playerViewController.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
                 playerViewController.view.bottomAnchor.constraint(equalTo: switchButton.topAnchor, constant: -20),
@@ -113,6 +98,7 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate {
             playButton.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(playButton)
 
+            playerViewController.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 urlInputField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
                 urlInputField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -134,6 +120,13 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate {
                 switchButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
             ])
         }
+
+        NotificationCenter.default.addObserver(self, selector: #selector(onPause), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onResume), name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     @objc private func customBackButtonTapped() {
@@ -141,9 +134,17 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate {
 
             navigationController?.popViewController(animated: true)
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+    }
+
+    @objc func onPause() {
+        flowerAdView.adsManager.pause()
+    }
+
+    @objc func onResume() {
+        flowerAdView.adsManager.resume()
     }
 
     @objc func playerDidFinishPlaying(_ notification: Notification) {
@@ -162,7 +163,7 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate {
 
     @objc private func switchChannel() {
         releasePlayer()
-        
+
         let newPlayerVC = PlayerViewController(video: nextVideo)
 
         if let navigationController = navigationController {
@@ -175,10 +176,20 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate {
     private func playVod(url: String, durationMs: Int64) {
         flowerAdView.adsManager.addListener(adsManagerListener: self)
 
-        // TODO GUIDE: Implement MediaPlayerHook to return the player instance if the player is supported by Flower SDK
-        let mediaPlayerHook = MediaPlayerHookImpl {
-            return self.player
+        // TODO GUIDE: Implement MediaPlayerHook to return the player instance
+        class MediaPlayerHookImpl: MediaPlayerHook {
+            public var getPlayerFn: () -> Any
+
+            public init(getPlayerFn: @escaping () -> Any) {
+                self.getPlayerFn = getPlayerFn
+            }
+
+            public func getPlayer() -> Any? {
+                getPlayerFn()
+            }
         }
+
+        let mediaPlayerHook = MediaPlayerHookImpl { self.player }
 
         // TODO GUIDE: Request VOD ad
         // arg0: adTagUrl, url from flower system.
@@ -204,10 +215,8 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate {
             name: .AVPlayerItemDidPlayToEndTime,
             object: playerItem
         )
-
-        player.pause()
         player.removeAllItems()
-        player.replaceCurrentItem(with: playerItem)
+        player.insert(playerItem, after: nil)
         player.play()
     }
 
@@ -215,7 +224,7 @@ class PlayerViewController: UIViewController, UINavigationControllerDelegate {
         flowerAdView.adsManager.removeListener(adsManagerListener: self)
         flowerAdView.adsManager.stop()
         player.pause()
-        player.replaceCurrentItem(with: nil)
+        player.removeAllItems()
     }
 }
 

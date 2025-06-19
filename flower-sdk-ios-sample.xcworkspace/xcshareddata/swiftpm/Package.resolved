@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/anypointmedia/flower-sdk-ios",
       "state" : {
-        "revision" : "e669c16283a6cd5b16523d17d8f9d8fc9dc37b56",
-        "version" : "1.1.12"
+        "revision" : "f4c8dae074208ae3c9f544547f3d4a3ed6573aeb",
+        "version" : "2.0.0"
       }
     }
   ],

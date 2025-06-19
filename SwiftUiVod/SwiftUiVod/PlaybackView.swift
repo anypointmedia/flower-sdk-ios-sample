@@ -22,27 +22,12 @@ class PlayerObserver: ObservableObject {
     }
 }
 
-// TODO GUIDE: Implement MediaPlayerHook to return the player instance if the player is supported by Flower SDK
-class MediaPlayerHookImpl: MediaPlayerHook {
-    public var getPlayerFn: () -> Any
-
-    public init(getPlayerFn: @escaping () -> Any) {
-        self.getPlayerFn = getPlayerFn
-    }
-
-    /**
-     * Return a player instance or MediaPlayerAdapter instance
-     */
-    public func getPlayer() -> Any? {
-        getPlayerFn()
-    }
-}
-
 struct PlaybackView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @State var player = AVQueuePlayer()
     @State var activated = true
     @ObservedObject private var observer = PlayerObserver()
-    
+
     private let video: Video?
     private let nextVideo: Video
     @State var isContentEnd = false
@@ -56,7 +41,7 @@ struct PlaybackView: View {
 
     init(video: Video?) {
         self.video = video
-       
+
         nextVideo = videoList.filter { $0 != video }.first!
     }
 
@@ -104,6 +89,23 @@ struct PlaybackView: View {
                 .cornerRadius(8)
             }
         }
+        .onChange(of: scenePhase) { newPhase in
+            switch newPhase {
+            case .background:
+                onPause()
+            case .active:
+                onResume()
+            @unknown default: ()
+            }
+        }
+    }
+
+    func onPause() {
+        flowerAdView.adsManager.pause()
+    }
+
+    func onResume() {
+        flowerAdView.adsManager.resume()
     }
 
     func playVod() {
@@ -113,10 +115,20 @@ struct PlaybackView: View {
         self.flowerAdsManagerListener = FlowerAdsManagerListenerImpl(self)
         flowerAdView.adsManager.addListener(adsManagerListener: self.flowerAdsManagerListener!)
 
-        // TODO GUIDE: Implement MediaPlayerHook to return the player instance if the player is supported by Flower SDK
-        let mediaPlayerHook = MediaPlayerHookImpl {
-            return player
+        // TODO GUIDE: Implement MediaPlayerHook to return the player instance
+        class MediaPlayerHookImpl: MediaPlayerHook {
+            public var getPlayerFn: () -> Any
+
+            public init(getPlayerFn: @escaping () -> Any) {
+                self.getPlayerFn = getPlayerFn
+            }
+
+            public func getPlayer() -> Any? {
+                getPlayerFn()
+            }
         }
+
+        let mediaPlayerHook = MediaPlayerHookImpl { player }
 
         // TODO GUIDE: Request VOD ad
         // arg0: adTagUrl, url from flower system.
@@ -135,9 +147,8 @@ struct PlaybackView: View {
             adTagHeaders: [String: String]()
         )
 
-        player.pause()
         player.removeAllItems()
-        player.replaceCurrentItem(with: AVPlayerItem(url: URL(string: videoUrl)!))
+        player.insert(AVPlayerItem(url: URL(string: videoUrl)!), after: nil)
 
         observer.observePlaybackEvents(for: player)
     }

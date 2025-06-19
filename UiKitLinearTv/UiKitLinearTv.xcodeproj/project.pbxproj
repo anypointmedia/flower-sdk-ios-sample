@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CDA270982D89F3BB00DECDC3 /* FlowerSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDA270972D89F3BB00DECDC3 /* FlowerSdk */; };
+		CDFD9FF22E0452CE00E713F6 /* FlowerSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDFD9FF12E0452CE00E713F6 /* FlowerSdk */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDA270982D89F3BB00DECDC3 /* FlowerSdk in Frameworks */,
+				CDFD9FF22E0452CE00E713F6 /* FlowerSdk in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,7 +78,7 @@
 			);
 			name = UiKitLinearTv;
 			packageProductDependencies = (
-				CDA270972D89F3BB00DECDC3 /* FlowerSdk */,
+				CDFD9FF12E0452CE00E713F6 /* FlowerSdk */,
 			);
 			productName = UiKitLinearTv;
 			productReference = CD1DBD622CE27E3E0030DA8F /* UiKitLinearTv.app */;
@@ -109,7 +109,7 @@
 			mainGroup = CD1DBD592CE27E3E0030DA8F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				CDA270962D89F3BB00DECDC3 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */,
+				CDFD9FF02E0452CE00E713F6 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CD1DBD632CE27E3E0030DA8F /* Products */;
@@ -347,20 +347,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CDA270962D89F3BB00DECDC3 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */ = {
+		CDFD9FF02E0452CE00E713F6 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/anypointmedia/flower-sdk-ios";
 			requirement = {
 				kind = exactVersion;
-				version = 1.1.12;
+				version = 2.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CDA270972D89F3BB00DECDC3 /* FlowerSdk */ = {
+		CDFD9FF12E0452CE00E713F6 /* FlowerSdk */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CDA270962D89F3BB00DECDC3 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */;
+			package = CDFD9FF02E0452CE00E713F6 /* XCRemoteSwiftPackageReference "flower-sdk-ios" */;
 			productName = FlowerSdk;
 		};
 /* End XCSwiftPackageProductDependency section */

@@ -4,22 +4,6 @@ import AVKit
 import SwiftUI
 import FlowerSdk
 
-// TODO GUIDE: Implement MediaPlayerHook to return the player instance if the player is supported by Flower SDK
-class MediaPlayerHookImpl: MediaPlayerHook {
-    public var getPlayerFn: () -> Any
-
-    public init(getPlayerFn: @escaping () -> Any) {
-        self.getPlayerFn = getPlayerFn
-    }
-
-    /**
-     * Return a player instance or MediaPlayerAdapter instance
-     */
-    public func getPlayer() -> Any? {
-        getPlayerFn()
-    }
-}
-
 class PlayerViewController: UIViewController {
     private let video: Video?
     private var nextVideo: Video!
@@ -79,6 +63,7 @@ class PlayerViewController: UIViewController {
         if (video != nil) {
             playLinearTv(url: video!.url)
 
+            playerViewController.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 playerViewController.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
                 playerViewController.view.bottomAnchor.constraint(equalTo: switchButton.topAnchor, constant: -20),
@@ -103,6 +88,7 @@ class PlayerViewController: UIViewController {
             playButton.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(playButton)
 
+            playerViewController.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 urlInputField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
                 urlInputField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -161,10 +147,20 @@ class PlayerViewController: UIViewController {
     private func playLinearTv(url: String) {
         flowerAdView.adsManager.addListener(adsManagerListener: self)
 
-        // TODO GUIDE: Implement MediaPlayerHook to return the player instance if the player is supported by Flower SDK
-        let mediaPlayerHook = MediaPlayerHookImpl {
-            return self.player
+        // TODO GUIDE: Implement MediaPlayerHook to return the player instance
+        class MediaPlayerHookImpl: MediaPlayerHook {
+            public var getPlayerFn: () -> Any
+
+            public init(getPlayerFn: @escaping () -> Any) {
+                self.getPlayerFn = getPlayerFn
+            }
+
+            public func getPlayer() -> Any? {
+                getPlayerFn()
+            }
         }
+
+        let mediaPlayerHook = MediaPlayerHookImpl { self.player }
 
         // TODO GUIDE: Change original linear TV stream url
         // arg0: videoUrl, original linear TV stream url
@@ -185,9 +181,8 @@ class PlayerViewController: UIViewController {
             channelStreamHeaders: [String: String]()
         )
 
-        player.pause()
         player.removeAllItems()
-        player.replaceCurrentItem(with: AVPlayerItem(url: URL(string: changedChannelUrl)!))
+        player.insert(AVPlayerItem(url: URL(string: changedChannelUrl)!), after: nil)
         player.play()
     }
 }

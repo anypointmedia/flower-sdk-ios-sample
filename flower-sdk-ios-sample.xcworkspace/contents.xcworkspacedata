@@ -19,4 +19,22 @@
    <FileRef
       location = "group:UiKitVod/UiKitVod.xcodeproj">
    </FileRef>
+   <Group
+      location = "group:AVPlayer"
+      name = "AVPlayer">
+      <Group
+         location = "group:FlowerAVPlayer"
+         name = "FlowerAVPlayer">
+         <Group
+            location = "group:LinearTV"
+            name = "LinearTV">
+            <FileRef
+               location = "group:SwiftUIFlowerAVPlayerLinearTV/SwiftUIFlowerAVPlayerLinearTV.xcodeproj">
+            </FileRef>
+            <FileRef
+               location = "group:UIKitFlowerAVPlayerLinearTV/UIKitFlowerAVPlayerLinearTV.xcodeproj">
+            </FileRef>
+         </Group>
+      </Group>
+   </Group>
 </Workspace>
